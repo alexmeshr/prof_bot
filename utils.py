@@ -7,9 +7,10 @@ from telebot import types
 entered = False
 gaming = False
 answered = True
-user=0
+user = 0
 iteration = 0
 bot = telebot.TeleBot(config.token)
+
 
 def parsing(message):
     global entered
@@ -21,10 +22,10 @@ def parsing(message):
     if not gaming:
 
         if message.text == "/signup" and not entered:
-            user = register(message.from_user.username, message.date)
+            user = register(message.chat.id, message.date)  # message.from_user.username
             entered = True
             bot.send_message(message.chat.id, "Вы залогинены!")
-            #что-то там с юзернеймом
+            # что-то там с юзернеймом
 
         elif message.text == "/game" and entered:
             gaming = True
@@ -35,29 +36,32 @@ def parsing(message):
             user.save()
             entered = False
             gaming = False
-            bot.send_message(message.chat.id, str(user.username) + ", Вы завершили игру c " + str(user.score) + " очками!")
+            bot.send_message(message.chat.id,
+                             str(user.username) + ", Вы завершили игру c " + str(user.score) + " очками!")
 
-    if gaming and iteration <4 :
+    if gaming and iteration < 4:
 
         points = get_points()
         if answered:
             bot.send_message(message.chat.id, points[iteration].question,
-                         reply_markup=generate_markup(points, iteration))
-            answered=False
+                             reply_markup=generate_markup(points, iteration))
+            answered = False
         else:
             if message.text == points[iteration].r_answ:
-                bot.send_message(message.chat.id,"Правильно!"+ " Вы получаете " + str(points[iteration].score) + " очков", reply_markup=next_markup())
-                user.score+=points[iteration].score;
+                bot.send_message(message.chat.id,
+                                 "Правильно!" + " Вы получаете " + str(points[iteration].score) + " очков",
+                                 reply_markup=next_markup())
+                user.score += points[iteration].score
             else:
                 bot.send_message(message.chat.id, "Неравильно:(", reply_markup=next_markup())
             answered = True
-            iteration+=1
-    elif gaming and iteration >3:
-            user.save()
-            entered = False
-            gaming = False
-            bot.send_message(message.chat.id,
-                             str(user.username) + ", Вы завершили игру c " + str(user.score) + " очками!")
+            iteration += 1
+    elif gaming and iteration > 3:
+        user.save()
+        entered = False
+        gaming = False
+        bot.send_message(message.chat.id,
+                         message.from_user.username + ", Вы завершили игру c " + str(user.score) + " очками!")
 
 
 def generate_markup(answers, i):
@@ -70,6 +74,7 @@ def generate_markup(answers, i):
     for item in list_items:
         markup.add(item)
     return markup
+
 
 def next_markup():
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)

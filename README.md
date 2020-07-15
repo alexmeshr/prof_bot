@@ -17,7 +17,7 @@ utils.py
 views.py 
 	-def get_points() - выдает кп
 	-def register(id) - /проверяет, есть ли пользователь в базе/(еще не сделано) и добавляет, если нужно
-
+    -def clear_users() - удаляет всех пользователей
 	-def create_tables() - создает бд
 
 

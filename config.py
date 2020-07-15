@@ -1,0 +1,2 @@
+token = '1152624497:AAHs6RSo01J8670OIUxZiy9e7OcpAZ1KSfk'
+DATABASE = "profcom.db"
